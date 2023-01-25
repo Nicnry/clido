@@ -2,11 +2,6 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-/*
-yarn prisma migrate dev --name init //run migration
-npx ts-node index.ts //Run seeder
-*/
-
 async function main() {
 
   for(let i = 1; i <= 1; i++) {
