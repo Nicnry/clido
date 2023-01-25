@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model todos {
+  id   Int     @id @default(autoincrement())
+  text String
+  done Boolean
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  snowflake   String   @db.VarChar(255)
+  title       String   @db.VarChar(255)
+  body        String?
+  published   Boolean  @default(false)
+  author      User     @relation(fields: [author_id], references: [id])
+  author_id   Int
+  approved    Approved @relation(fields: [approved_id], references: [id])
+  approved_id Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("posts")
+}
+
+model Approved {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    Int
+  comment    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Post       Post[]
+
+  @@map("approved")
+}
+
+model Profile {
+  id      Int     @id @default(autoincrement())
+  bio     String?
+  user    User    @relation(fields: [user_id], references: [id])
+  user_id Int     @unique
+
+  @@map("profiles")
+}
+
+model User {
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
+  name     String?
+  posts    Post[]
+  profile  Profile?
+  Approved Approved[]
+
+  @@map("users")
+}
